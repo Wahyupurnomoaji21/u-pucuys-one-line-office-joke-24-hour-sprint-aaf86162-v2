@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -15,4 +15,10 @@ const outputDir =
   join(dirname(fileURLToPath(import.meta.url)), "output");
 
 mkdirSync(outputDir, { recursive: true });
-writeFileSync(join(outputDir, "entry.txt"), joke, "utf8");
+const entryPath = join(outputDir, "entry.txt");
+writeFileSync(entryPath, joke, "utf8");
+
+// Read-back check: the written file must match the entry exactly.
+if (readFileSync(entryPath, "utf8") !== joke) {
+  throw new Error("entry.txt does not match the joke");
+}
